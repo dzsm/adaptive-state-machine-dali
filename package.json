@@ -42,7 +42,7 @@
     "jsonpack": "^1.1.5",
     "jsplumb": "^2.7.13",
     "nano-sql": "^1.7.8",
-    "ngx-diagram": "0.0.1",
+    "ngx-diagram": "^0.0.3",
     "ngx-json-viewer": "^2.4.0",
     "pouchdb": "^7.0.0",
     "pouchdb-browser": "^7.0.0",
