@@ -1,0 +1,95 @@
+<!--
+<div style="max-height: 600px; overflow-y: scroll;">
+  <table style="width:100%">
+    <tr style="background-color: lightGray;">
+      <th>TIMESTAMP</th>
+      <th>TYPE</th>
+      <th>ACTION</th>
+      <th>DELTA</th>
+    </tr>
+    <tr *ngFor="let record of records"
+        [ngStyle]="{'background-color': record.type=='PROCESS'?'lightPink':'lightGreen'}">
+      <td>{{record.ts}}</td>
+      <td>{{record.type}}</td>
+      <td>
+        <pre>{{record?.action|json}}</pre>
+      </td>
+      <td>
+        <pre>{{record.delta|json}}</pre>
+      </td>
+    </tr>
+  </table>
+</div>
+-->
+<mat-card style="padding: 0;">
+    <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
+        <mat-card-title-group>
+            <mat-card-title [style.margin.px]="5"><strong>RECORDS</strong></mat-card-title>
+            <mat-card-subtitle [style.margin.px]="5">{{state?.processor.cursor}}</mat-card-subtitle>
+        </mat-card-title-group>
+        <div fxFlex></div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <!-- <button mat-menu-item >
+              <mat-icon>done_all</mat-icon>
+              <span>Finish</span>
+            </button> -->
+            <button mat-menu-item disabled="!help">
+                <mat-icon>help</mat-icon>
+                <span>Help</span>
+            </button>
+        </mat-menu>
+
+    </mat-card-header>
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+
+        <div [style.padding.px]="10">
+
+            <div class="mat-elevation-z2">
+                <table [style.width.%]="100" mat-table [dataSource]="records">
+
+                    <ng-container matColumnDef="ts">
+                        <th mat-header-cell *matHeaderCellDef>TIMESTAMP</th>
+                        <td mat-cell *matCellDef="let row">{{row.ts}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="type">
+                        <th mat-header-cell *matHeaderCellDef>TYPE</th>
+                        <td mat-cell *matCellDef="let row">{{row.type}}</td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="action">
+                        <th mat-header-cell *matHeaderCellDef>ACTION</th>
+                        <td mat-cell *matCellDef="let row">
+              <pre [style.padding.px]="5" [style.background]="'black'" [style.color]="'white'"
+                   [style.overflow]="'auto'">{{row.action|json}}</pre>
+
+                            <!-- <pre>{{row.action|json}}</pre> -->
+                        </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="delta">
+                        <th mat-header-cell *matHeaderCellDef>DELTA</th>
+                        <td mat-cell *matCellDef="let row">
+              <pre [style.padding.px]="5" [style.background]="'black'" [style.color]="'white'"
+                   [style.overflow]="'auto'">{{row.delta|json}}</pre>
+
+                            <!-- <pre>{{row.delta|json}}</pre> -->
+                        </td>
+                    </ng-container>
+
+                    <tr mat-header-row *matHeaderRowDef="['ts', 'type', 'action', 'delta']"></tr>
+                    <tr mat-row *matRowDef="let row; columns: ['ts', 'type', 'action', 'delta'];"
+                        [style.background]="row.type=='PROCESS'?'lightPink':'lightGreen'"></tr>
+                </table>
+                <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+            </div>
+        </div>
+
+    </mat-card-content>
+
+</mat-card>

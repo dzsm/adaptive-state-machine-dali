@@ -1,0 +1,38 @@
+<mat-card *ngIf="node" [style.padding.px]="0" [style.margin.px]="0">
+    <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
+        <mat-card-title-group>
+            <mat-card-title [style.margin.px]="5"><strong>{{node?.type}}</strong></mat-card-title>
+            <mat-card-subtitle [style.margin.px]="5">{{node?.id}}</mat-card-subtitle>
+        </mat-card-title-group>
+        <div fxFlex></div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <!-- <button mat-menu-item >
+              <mat-icon>done_all</mat-icon>
+              <span>Finish</span>
+            </button> -->
+            <button mat-menu-item disabled="!help">
+                <mat-icon>help</mat-icon>
+                <span>Help</span>
+            </button>
+        </mat-menu>
+
+    </mat-card-header>
+
+    <mat-card-content>
+        <mat-grid-list cols="4" [rowHeight]="50">
+            <mat-grid-tile [colspan]="4" [rowspan]="2">
+            <pre [style.width.%]="100" [style.height.%]="100" [style.padding.px]="5" [style.background]="'black'"
+                 [style.color]="'white'" [style.overflow]="'auto'">{{node?.data|json}}</pre>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
+                {{node?.input||'-'}}
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
+                {{node?.output||'-'}}
+            </mat-grid-tile>
+        </mat-grid-list>
+    </mat-card-content>
+</mat-card>

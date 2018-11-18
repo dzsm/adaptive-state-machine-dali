@@ -1,0 +1,206 @@
+<mat-card style="padding: 0; background-color: transparent;">
+    <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
+        <mat-card-title-group>
+            <mat-card-title [style.margin.px]="5"><strong>PROGRAM</strong></mat-card-title>
+            <mat-card-subtitle [style.margin.px]="5">{{selected}}</mat-card-subtitle>
+        </mat-card-title-group>
+        <div fxFlex></div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item>
+                <mat-icon>done_all</mat-icon>
+                <span>Finish</span>
+            </button>
+            <button mat-menu-item disabled="true">
+                <mat-icon>help</mat-icon>
+                <span>Help</span>
+            </button>
+        </mat-menu>
+
+    </mat-card-header>
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+        <ngx-diagram #diagram (connected)="connected($event)" (clicked)="created($event)">
+            <ng-template let-node="node">
+                <app-node [node]="node"></app-node>
+            </ng-template>
+        </ngx-diagram>
+        <!--
+            <app-graph [nodes]="nodes" [edges]="edges" [(selected)]="selected" [(focused)]="focused" [cursor]="cursor"
+                       (focusedNode)="focusedNode=$event" (selectedNode)="selectedNode=$event">
+            </app-graph>
+        -->
+    </mat-card-content>
+
+    <!--
+    <mat-card-content fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around start" fxLayoutAlign.xs="stretch center">
+
+      <mat-card fxFlex="50%"  *ngIf="selectedNode" [style.border]="'2px solid blue'" [style.padding.px]="0" [style.margin.px]="5">
+        <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
+          <mat-card-title-group>
+            <mat-card-title [style.margin.px]="5"><strong>{{selectedNode?.type}}</strong></mat-card-title>
+            <mat-card-subtitle [style.margin.px]="5">{{selected}}</mat-card-subtitle>
+          </mat-card-title-group>
+          <div fxFlex></div>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item disabled="!help">
+              <mat-icon>help</mat-icon>
+              <span>Help</span>
+            </button>
+          </mat-menu>
+
+        </mat-card-header>
+
+        <mat-card-content>
+          <mat-grid-list cols="4" [rowHeight]="50">
+            <mat-grid-tile [colspan]="4" [rowspan]="2">
+              <pre [style.width.%]="100" [style.height.%]="100" [style.padding.px]="5" [style.background]="'black'"
+                   [style.color]="'white'" [style.overflow]="'auto'">{{selectedNode?.data|json}}</pre>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
+              {{selectedNode?.input||'-'}}
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
+              {{selectedNode?.output||'-'}}
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-card-content>
+      </mat-card>
+      <mat-card fxFlex="50%"  *ngIf="focusedNode && selected != focused" [style.border]="'2px solid red'" [style.padding.px]="0" [style.margin.px]="5">
+        <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
+          <mat-card-title-group>
+            <mat-card-title [style.margin.px]="5"><strong>{{focusedNode?.type}}</strong></mat-card-title>
+            <mat-card-subtitle [style.margin.px]="5">{{focused}}</mat-card-subtitle>
+          </mat-card-title-group>
+          <div fxFlex></div>
+          <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+          </button>
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item disabled="!help">
+              <mat-icon>help</mat-icon>
+              <span>Help</span>
+            </button>
+          </mat-menu>
+
+        </mat-card-header>
+
+        <mat-divider></mat-divider>
+        <mat-card-content>
+          <mat-grid-list cols="4" [rowHeight]="50">
+            <mat-grid-tile [colspan]="4" [rowspan]="2">
+              <pre [style.width.%]="100" [style.height.%]="100" [style.padding.px]="5" [style.background]="'black'"
+                   [style.color]="'white'" [style.overflow]="'auto'">{{focusedNode?.data|json}}</pre>
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
+              {{focusedNode?.input||'-'}}
+            </mat-grid-tile>
+            <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
+              {{focusedNode?.output||'-'}}
+            </mat-grid-tile>
+          </mat-grid-list>
+        </mat-card-content>
+      </mat-card>
+
+    </mat-card-content>
+
+    -->
+    <mat-divider></mat-divider>
+
+
+    <mat-card-actions [style.padding.px]="7" [style.margin.px]="0">
+        <!--  <button mat-button color="primary" (click)="graphEditorService.applyAutoLayout('LR')">AUTO LAYOUT</button> -->
+        <button mat-button color="primary" [matMenuTriggerFor]="menuA">AUTO LAYOUT</button>
+        <mat-menu #menuA="matMenu">
+            <!--    <button mat-menu-item *ngFor="let algorithm of graphEditorService.autoLayoutAlgorithms" (click)="graphEditorService.applyAutoLayout(algorithm)">{{algorithm.name}}</button> -->
+        </mat-menu>
+
+        <!--<button mat-button color="primary">REMOVE NODE</button>
+        <button mat-button color="primary">ADD LINK</button>
+        <button mat-button color="primary">REMOVE LINK</button> -->
+    </mat-card-actions>
+
+
+</mat-card>
+
+
+<!--
+
+<mat-card>
+  <mat-card-header>
+    <mat-card-title-group>
+      <mat-card-title><strong>PROGRAM</strong></mat-card-title>
+      <mat-card-subtitle>{{selected}}</mat-card-subtitle>
+    </mat-card-title-group>
+    <div fxFlex></div>
+    <button mat-icon-button [matMenuTriggerFor]="menu">
+      <mat-icon>more_vert</mat-icon>
+    </button>
+    <mat-menu #menu="matMenu">
+      <button mat-menu-item>
+        <mat-icon>done_all</mat-icon>
+        <span>Finish</span>
+      </button>
+      <button mat-menu-item disabled="!help">
+        <mat-icon>help</mat-icon>
+        <span>Help</span>
+      </button>
+    </mat-menu>
+
+  </mat-card-header>
+  <mat-divider></mat-divider>
+
+  <mat-card-content>
+    <app-graph [nodes]="nodes" [edges]="edges" [(selected)]="selected" [(focused)]="focused" (focusedNode)="focusedNode=$event" (selectedNode)="selectedNode=$event"  ></app-graph>
+  </mat-card-content>
+
+  <mat-card-content fxLayout="row" fxLayoutAlign="center stretch">
+    <mat-card style="margin: 1em;">
+      <mat-card-header>
+        <mat-card-title>FOCUSED</mat-card-title>
+        <mat-card-subtitle>{{selected}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-card-content>
+        {{selectedNode?.type}}
+        {{selectedNode?.data}}
+        {{selectedNode?.input}}
+        {{selectedNode?.output}}
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="focused!=selected && focused" style="margin: 1em;">
+      <mat-card-header>
+        <mat-card-title>SELECTED</mat-card-title>
+        <mat-card-subtitle>{{focused}}</mat-card-subtitle>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        {{selectedNode?.type}}
+        {{selectedNode?.data}}
+        {{selectedNode?.input}}
+        {{selectedNode?.output}}
+      </mat-card-content>
+    </mat-card>
+
+  </mat-card-content>
+  <mat-divider></mat-divider>
+
+  <mat-card-actions>
+    <button mat-button color="primary">ADD NODE</button>
+    <button mat-button color="primary">REMOVE NODE</button>
+    <button mat-button color="primary">ADD LINK</button>
+    <button mat-button color="primary">REMOVE LINK</button>
+  </mat-card-actions>
+
+</mat-card>
+-->
+<!-- <button mat-menu-item >
+  <mat-icon>done_all</mat-icon>
+  <span>Finish</span>
+</button> -->

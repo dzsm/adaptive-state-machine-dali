@@ -1,0 +1,97 @@
+<!--
+<div style="max-height: 600px; overflow-y: scroll;">
+<table style="width:100%">
+  <tr style="background-color: lightGray;">
+    <th>INTERFACE</th>
+    <th>PROCESSOR</th>
+    <th>STORAGE</th>
+  </tr>
+  <tr style="background-color: lightPink;">
+    <td><pre>{{state?.interface|json}}</pre></td>
+    <td><pre>{{state?.processor|json}}</pre></td>
+    <td><pre>{{state?.storage|json}}</pre></td>
+  </tr>
+</table>
+</div>
+-->
+<mat-card style="padding: 0;">
+    <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
+        <mat-card-title-group>
+            <mat-card-title [style.margin.px]="5"><strong>STATE</strong>: {{state?.id}}</mat-card-title>
+            <mat-card-subtitle [style.margin.px]="5">{{state?.processor.cursor}}</mat-card-subtitle>
+        </mat-card-title-group>
+        <div fxFlex></div>
+        <button mat-icon-button [matMenuTriggerFor]="menu">
+            <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <!-- <button mat-menu-item >
+              <mat-icon>done_all</mat-icon>
+              <span>Finish</span>
+            </button> -->
+            <button mat-menu-item disabled="!help">
+                <mat-icon>help</mat-icon>
+                <span>Help</span>
+            </button>
+        </mat-menu>
+
+    </mat-card-header>
+    <mat-divider></mat-divider>
+
+    <mat-card-content>
+        <mat-tab-group>
+            <mat-tab label="REGISTER">
+                <div [style.padding.px]="10">
+
+                    <table [style.width.%]="100" mat-table [dataSource]="getRegisterArray()" class="mat-elevation-z2">
+
+                        <ng-container matColumnDef="key">
+                            <th mat-header-cell *matHeaderCellDef>KEY</th>
+                            <td mat-cell *matCellDef="let row">{{row.key}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="value">
+                            <th mat-header-cell *matHeaderCellDef>VALUE</th>
+                            <td mat-cell *matCellDef="let row">{{row.value|json}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="['key', 'value']"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ['key', 'value'];"></tr>
+                    </table>
+                </div>
+            </mat-tab>
+            <mat-tab label="STORAGE">
+                <div [style.padding.px]="10">
+                    <table [style.width.%]="100" mat-table [dataSource]="getStorageArray()" class="mat-elevation-z2">
+
+                        <ng-container matColumnDef="key">
+                            <th mat-header-cell *matHeaderCellDef>KEY</th>
+                            <td mat-cell *matCellDef="let row">{{row.key}}</td>
+                        </ng-container>
+
+                        <ng-container matColumnDef="value">
+                            <th mat-header-cell *matHeaderCellDef>VALUE</th>
+                            <td mat-cell *matCellDef="let row">{{row.value|json}}</td>
+                        </ng-container>
+
+                        <tr mat-header-row *matHeaderRowDef="['key', 'value']"></tr>
+                        <tr mat-row *matRowDef="let row; columns: ['key', 'value'];"></tr>
+                    </table>
+                </div>
+            </mat-tab>
+            <mat-tab label="JSON">
+                <div [style.padding.px]="10">
+                    <pre [style.padding.px]="5" [style.background]="'black'" [style.color]="'white'"
+                         [style.overflow]="'auto'">{{state|json}}</pre>
+                </div>
+            </mat-tab>
+        </mat-tab-group>
+    </mat-card-content>
+
+    <mat-divider></mat-divider>
+    <mat-card-actions [style.padding.px]="7" [style.margin.px]="0">
+        <button mat-button color="primary">PREVIOUS</button>
+        <button mat-button color="primary">NEXT</button>
+        <button mat-button color="primary">RESET</button>
+    </mat-card-actions>
+</mat-card>
