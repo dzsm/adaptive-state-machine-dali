@@ -115,11 +115,11 @@
 
 
     <mat-card-actions [style.padding.px]="7" [style.margin.px]="0">
-        <!--  <button mat-button color="primary" (click)="graphEditorService.applyAutoLayout('LR')">AUTO LAYOUT</button> -->
-        <button mat-button color="primary" [matMenuTriggerFor]="menuA">AUTO LAYOUT</button>
-        <mat-menu #menuA="matMenu">
-            <!--    <button mat-menu-item *ngFor="let algorithm of graphEditorService.autoLayoutAlgorithms" (click)="graphEditorService.applyAutoLayout(algorithm)">{{algorithm.name}}</button> -->
-        </mat-menu>
+        <button mat-button color="primary" (click)="diagram.autoLayout().then()">AUTO LAYOUT</button>
+        <!--      <button mat-button color="primary" [matMenuTriggerFor]="menuA">AUTO LAYOUT</button>
+              <mat-menu #menuA="matMenu">
+                  <!--    <button mat-menu-item *ngFor="let algorithm of graphEditorService.autoLayoutAlgorithms" (click)="graphEditorService.applyAutoLayout(algorithm)">{{algorithm.name}}</button>
+              </mat-menu> -->
 
         <!--<button mat-button color="primary">REMOVE NODE</button>
         <button mat-button color="primary">ADD LINK</button>
