@@ -198,6 +198,32 @@ export class TestProgramControl implements IProgramControl {
         return Promise.all(node.tos.map(id => this.getNode(id)));
     }
 
+    async addNode(type: string, data: any, input: string, output: string, id?: string) {
+
+        const id_ = v4();
+
+        await nSQL('Nodes').query('upsert', {
+            id: id || id_,
+            type: type,
+            data: data || null,
+            input: input || null,
+            output: output || null,
+        }).exec();
+
+        return id || id_;
+    }
+
+    async addEdge(fromId: string, toId: string) {
+
+        await nSQL('Edges').query('upsert', {
+            type: 'FLOW',
+            from: fromId,
+            to: toId,
+        }).exec();
+
+        return fromId + '-' + toId;
+    }
+
 }
 
 export class TestMemoryControl implements IStateControl {
@@ -248,7 +274,7 @@ export class StateMachine implements IStateMachine {
 
     private reactor: Reactor;
     private stateControl: TestMemoryControl;
-    private programControl: TestProgramControl;
+    public programControl: TestProgramControl;
 
     state$: Observable<IState>;
     records$: Observable<Array<IRecord>>;

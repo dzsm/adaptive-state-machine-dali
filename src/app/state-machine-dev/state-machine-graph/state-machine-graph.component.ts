@@ -1,5 +1,5 @@
 import {Component, Inject, NgZone, OnInit, ViewChild} from '@angular/core';
-import {StateMachineService} from '../../state-machine';
+import {INode, StateMachineService} from '../../state-machine';
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {filter} from 'rxjs/operators';
@@ -80,9 +80,12 @@ export class StateMachineGraphComponent implements OnInit {
 
         this.addConnectionDialogRef
             .afterClosed()
-            .pipe(filter(name => name))
-            .subscribe(name => {
-                console.log(name);
+            .pipe(filter(connectionData => connectionData !== null))
+            .subscribe(connectionData => {
+                this.stateMachineService.programControl.addEdge(connectionData.source.id, connectionData.target.id).then(id => {
+                    this.diagram.redraw();
+                });
+                console.log(connectionData);
             });
     }
 
@@ -95,9 +98,13 @@ export class StateMachineGraphComponent implements OnInit {
 
         this.addNodeDialogRef
             .afterClosed()
-            .pipe(filter(name => name))
-            .subscribe(name => {
-                console.log(name);
+            .pipe(filter(nodeData => nodeData !== null))
+            .subscribe(nodeData => {
+                this.stateMachineService.programControl.addNode(nodeData.type, nodeData.data, nodeData.input, nodeData.output).then(id => {
+                    this.diagram.addNodeTo({id}, nodeData.position.x, nodeData.position.y);
+                    this.diagram.redraw();
+                });
+                console.log(nodeData);
             });
     }
 }
@@ -112,83 +119,11 @@ export class StateMachineGraphComponent implements OnInit {
                 <strong>=></strong>
                 <app-node [node]="data.target"></app-node>
             </div>
-            <!--
-                        <mat-card fxFlex="50%" [style.padding.px]="0" [style.margin.px]="5">
-                            <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
-                                <mat-card-title-group>
-                                    <mat-card-title [style.margin.px]="5"><strong>{{data.source?.type}}</strong></mat-card-title>
-                                    <mat-card-subtitle [style.margin.px]="5">{{data.source?.id}}</mat-card-subtitle>
-                                </mat-card-title-group>
-                                <div fxFlex></div>
-                                <button mat-icon-button [matMenuTriggerFor]="menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #menu="matMenu">
-                                    <button mat-menu-item disabled="!help">
-                                        <mat-icon>help</mat-icon>
-                                        <span>Help</span>
-                                    </button>
-                                </mat-menu>
-            
-                            </mat-card-header>
-            
-                            <mat-card-content>
-                                <mat-grid-list cols="4" [rowHeight]="50">
-                                    <mat-grid-tile [colspan]="4" [rowspan]="2">
-                          <pre [style.width.%]="100" [style.height.%]="100" [style.padding.px]="5" [style.background]="'black'"
-                               [style.color]="'white'" [style.overflow]="'auto'">{{data.source?.data | json}}</pre>
-                                    </mat-grid-tile>
-                                    <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
-                                        {{data.source?.input || '-'}}
-                                    </mat-grid-tile>
-                                    <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
-                                        {{data.source?.output || '-'}}
-                                    </mat-grid-tile>
-                                </mat-grid-list>
-                            </mat-card-content>
-                        </mat-card>
-                        <mat-card fxFlex="50%"  [style.padding.px]="0"
-                                  [style.margin.px]="5">
-                            <mat-card-header [style.background]="'lightGrey'" [style.padding.px]="10" [style.margin.px]="0">
-                                <mat-card-title-group>
-                                    <mat-card-title [style.margin.px]="5"><strong>{{data.target?.type}}</strong></mat-card-title>
-                                    <mat-card-subtitle [style.margin.px]="5">{{data.target?.id}}</mat-card-subtitle>
-                                </mat-card-title-group>
-                                <div fxFlex></div>
-                                <button mat-icon-button [matMenuTriggerFor]="menu">
-                                    <mat-icon>more_vert</mat-icon>
-                                </button>
-                                <mat-menu #menu="matMenu">
-                                    <button mat-menu-item disabled="!help">
-                                        <mat-icon>help</mat-icon>
-                                        <span>Help</span>
-                                    </button>
-                                </mat-menu>
-            
-                            </mat-card-header>
-            
-                            <mat-divider></mat-divider>
-                            <mat-card-content>
-                                <mat-grid-list cols="4" [rowHeight]="50">
-                                    <mat-grid-tile [colspan]="4" [rowspan]="2">
-                          <pre [style.width.%]="100" [style.height.%]="100" [style.padding.px]="5" [style.background]="'black'"
-                               [style.color]="'white'" [style.overflow]="'auto'">{{data.target?.data | json}}</pre>
-                                    </mat-grid-tile>
-                                    <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
-                                        {{data.target?.input || '-'}}
-                                    </mat-grid-tile>
-                                    <mat-grid-tile [colspan]="2" [rowspan]="1" [style.background]="'lightGrey'">
-                                        {{data.target?.output || '-'}}
-                                    </mat-grid-tile>
-                                </mat-grid-list>
-                            </mat-card-content>
-                        </mat-card>
-            -->
 
         </mat-dialog-content>
         <mat-dialog-actions>
-            <button mat-button (click)="submit('ADD')">Add Connection</button>
-            <button mat-button (click)="submit('CANCEL')">Cancel</button>
+            <button mat-button (click)="submitAddConnection()">Add Connection</button>
+            <button mat-button (click)="submitCancel()">Cancel</button>
         </mat-dialog-actions>
     `
 })
@@ -200,8 +135,12 @@ export class AddConnectionDialogComponent implements OnInit {
     ngOnInit() {
     }
 
-    submit(form) {
-        this.dialogRef.close(form);
+    submitAddConnection() {
+        this.dialogRef.close(this.data);
+    }
+
+    submitCancel() {
+        this.dialogRef.close(null);
     }
 
 }
@@ -211,32 +150,40 @@ export class AddConnectionDialogComponent implements OnInit {
         <h1 mat-dialog-title>Add Node</h1>
         <mat-dialog-content>
 
-            <form class="example-form">
-                <mat-form-field class="example-full-width">
-                    <input matInput placeholder="Company (disabled)" disabled value="Google">
+            <mat-form-field style="width: 100%;">
+                <mat-select required placeholder="Node Type" [(ngModel)]="selectedNodeType">
+                    <mat-option *ngFor="let nodeClass of constants2.NODE_CLASS_LIST" [value]="nodeClass.nodeType">
+                        {{ nodeClass.nodeType }} ( {{nodeClass.nodeKind}} )
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+
+            <div *ngFor="let form of constants2.TYPE_TO_NODE_CLASS_MAP[selectedNodeType].nodeForm">
+
+                <mat-form-field style="width: 100%;" *ngIf="form.field=='data'">
+                    <mat-select required placeholder="Data Type" [(ngModel)]="forms.type">
+                        <mat-option *ngFor="let x of form.options" [value]="x">{{ x }}</mat-option>
+                    </mat-select>
                 </mat-form-field>
 
-                <select required [(ngModel)]="selectedNodeType"> <!-- <== changed -->
-                    <option *ngFor="let nodeClass of constants2.NODE_CLASS_LIST" [ngValue]="nodeClass.nodeType">{{ nodeClass.nodeType }}
-                    </option>
-                </select>
-                
-                <div *ngFor="let form of constants2.TYPE_TO_NODE_CLASS_MAP[selectedNodeType].nodeForm">
-                    {{form.field}}
-                    <select *ngIf="form.field=='data'" required [(ngModel)]="forms.type">
-                        <option *ngFor="let x of form.options" [ngValue]="x">{{ x }}</option>
-                    </select>
-                    <input type="text" [(ngModel)]="forms.data" *ngIf="form.field=='data'">
-                    <input type="text" [(ngModel)]="forms.output" *ngIf="form.field=='output'">
-                    <input type="text" [(ngModel)]="forms.input" *ngIf="form.field=='input'">
+                <mat-form-field style="width: 100%;" *ngIf="form.field=='data'">
+                    <input matInput type="text" placeholder="Data" [(ngModel)]="forms.data">
+                </mat-form-field>
 
-                </div>
+                <mat-form-field style="width: 100%;" *ngIf="form.field=='output'">
+                    <input matInput type="text" placeholder="Output Register" [(ngModel)]="forms.output">
+                </mat-form-field>
 
-            </form>
+                <mat-form-field style="width: 100%;" *ngIf="form.field=='input'">
+                    <input matInput type="text" placeholder="Input Register" [(ngModel)]="forms.input">
+                </mat-form-field>
+
+            </div>
+
         </mat-dialog-content>
         <mat-dialog-actions>
-            <button mat-button (click)="submit('ADD')">Add Node</button>
-            <button mat-button (click)="submit('CANCEL')">Cancel</button>
+            <button mat-button (click)="submitAddNode()">Add Node</button>
+            <button mat-button (click)="submitCancel()">Cancel</button>
         </mat-dialog-actions>
     `
 })
@@ -244,9 +191,9 @@ export class AddNodeDialogComponent implements OnInit {
 
 
     forms = {
-        type: null,
         output: null,
         input: null,
+        type: null,
         data: null,
     };
 
@@ -266,8 +213,21 @@ export class AddNodeDialogComponent implements OnInit {
     ngOnInit() {
     }
 
-    submit(form) {
-        this.dialogRef.close(form);
+    submitAddNode() {
+        const node = {
+            id: null,
+            data: this.forms.data,
+            input: this.forms.input,
+            output: this.forms.output,
+            type: this.selectedNodeType,
+            position: this.data
+        };
+        this.dialogRef.close(node);
     }
+
+    submitCancel() {
+        this.dialogRef.close(null);
+    }
+
 
 }
