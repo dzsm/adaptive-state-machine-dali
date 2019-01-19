@@ -4,8 +4,8 @@ import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import {filter} from 'rxjs/operators';
 import {NgxDiagramComponent} from 'ngx-diagram';
-import * as Constants from '../../state-machine-flow/state-machine-core/state-machine.constants';
-import * as Constants2 from '../../state-machine-flow/state-machine-core/state-machine.nodes';
+import * as Constants from '../../state-machine-functions/state-machine-core/state-machine.constants';
+import * as Constants2 from '../../state-machine-functions/state-machine-core/state-machine.nodes';
 
 @Component({
     selector: 'app-state-machine-graph',

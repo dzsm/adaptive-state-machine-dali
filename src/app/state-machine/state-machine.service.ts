@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 
 import {StateMachine} from './state-machine.nsql';
-import {IStateMachine} from '../state-machine-flow/state-machine-core';
+import {IStateMachine} from '../state-machine-functions/state-machine-core';
 
 @Injectable({
     providedIn: 'root'

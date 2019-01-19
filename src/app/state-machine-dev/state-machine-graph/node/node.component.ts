@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {INode} from '../../../state-machine-flow';
+import {INode} from '../../../state-machine-functions';
 
 @Component({
     selector: 'app-node',

@@ -12,7 +12,7 @@ import {
     Reactor,
     NODE_CLASS_LIST,
     IStateMachine
-} from '../state-machine-flow/state-machine-core';
+} from '../state-machine-functions/state-machine-core';
 
 import {v4} from 'uuid';
 import {nSQL} from 'nano-sql';
@@ -224,6 +224,9 @@ export class TestProgramControl implements IProgramControl {
         return fromId + '-' + toId;
     }
 
+    async addPath(path: Array<INode|string>, rating: any, backingStake: number, stakeTime: number) {
+
+    }
 }
 
 export class TestMemoryControl implements IStateControl {
